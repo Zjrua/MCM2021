@@ -18,8 +18,9 @@ def create_matrix():
             g[id_list.index(item[0])][id_list.index(item[4])] = 1
 
 create_matrix()
+#print(id_list)
 #print(g)
-
+#exit()
 for i in range(0, 5604):
     sum = 0
     for j in range(0, 5604):
@@ -27,13 +28,19 @@ for i in range(0, 5604):
     if sum == 0:
         continue
     for j in range(0, 5604):
-        g1[i][j] = g[i][j] / sum
+        g1[i][j] = g[i][j] * 1 / sum
 #print(g1)
 
-v = np.zeros((0, 5604), dtype = np.float)
+v = np.zeros((5604, 1), dtype = np.float)
+op = {}
 for i in range(0, 5604):
-    v[i] = 1 / 5604
-print(v)
+    v[i] = (1 / 5603)
+#print(v)
 for times in range(1, 1000):
-    v = np.dot(v, g1)
-print(v)
+    v = np.dot(g1, v)
+#print(v)
+
+with open("output.csv", "w", newline="") as csvFile:
+    reader = csv.writer(csvFile, dialect="excel")
+    reader.writerow(id_list)
+    reader.writerow(v)
