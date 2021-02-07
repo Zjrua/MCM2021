@@ -7,7 +7,7 @@ def PageRank(M, alpha, root):
     n = len(M)
     v = np.zeros(n)
     v[node2index[root]] = 1
-    while np.sum(abs(v - (alpha * np.matmul(M, v) + (1 - alpha) * v))) > 0.0001:
+    while np.sum(abs(v - (alpha * np.matmul(M, v) + (1 - alpha) * v))) > 1e-10:
         v = alpha * np.matmul(M, v) + (1 - alpha) * v
     for ind, prob in enumerate(v):
         result.append([index2node[ind], prob])
@@ -43,27 +43,39 @@ def Generate_G():
             else:
                 if item[0] not in id_list:
                     id_list.append(item[0])
+                
                 if item[4] not in id_list:
                     id_list.append(item[4])
+                
                 if item[0] not in G:
                     G[item[0]] = {item[4] : 1}
                     #print(G[item[0]])
                 else:
                     G[item[0]][item[4]] = 1
+                
+                if item[4] not in G:
+                    G[item[4]] = {item[0] : 0}
+                    #print(G[item[0]])
+                else:
+                    G[item[4]][item[0]] = 0
+    #print(len(G))
     return G
 
 if __name__ == '__main__':
     alpha = 0.85
     root = "759491"
-    num_iter = 100
-    num_candidates = 5603
+    num_candidates = 25000000
     id_list = []
     G = Generate_G()
-    #print(G)
+    #print(len(id_list))
+    #print(len(G))
     M, node2index, index2node = Generate_Transfer_Matrix(G)
     result = PageRank(M, alpha, root)
     #print(result)
+    #print(len(result))
+    
     with open("output_data.csv", "w", encoding="UTF-8") as output:
         writer = csv.writer(output)
         for lines in result:
             writer.writerow(lines)
+    
